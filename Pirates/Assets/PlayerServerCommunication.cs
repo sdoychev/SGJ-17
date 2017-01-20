@@ -5,19 +5,26 @@ using UnityEngine.Networking;
 using System.Net;
 using System.Net.Sockets;
 
-public class PlayerServerCommunication : NetworkBehaviour {
-
-    NetworkClient myClient;
-
+public class PlayerServerCommunication : NetworkBehaviour
+{
     public class MessageTypes
     {
         public static short PuzzleType = 1000;
     };
+
+    public class PuzzleMessage : MessageBase
+    {
+        public int puzzleInt;
+    }
+
+    NetworkClient mLocalClient;
+
     
+    /*
     PlayerServerCommunication()
     {
         SetupClient();
-    }
+    }*/
 
     void Update()
     {
@@ -30,25 +37,22 @@ public class PlayerServerCommunication : NetworkBehaviour {
     [Command]
     void CmdSolvePuzzle()
     {
-        Puzzle puzzle = new Puzzle();
-        puzzle.puzzleInt = 222;
-        NetworkServer.SendToAll(MessageTypes.PuzzleType, puzzle);
+        PuzzleMessage puzzleMessage = new PuzzleMessage();
+        puzzleMessage.puzzleInt = 222;
+        NetworkServer.SendToAll(MessageTypes.PuzzleType, puzzleMessage);
     }
-
-    public class Puzzle : MessageBase
-    {
-        public int puzzleInt;
-    }
-
+    
     public void SetupClient()
     {
-        myClient = new NetworkClient();
-        myClient.RegisterHandler(MessageTypes.PuzzleType, ClientSideFunction);
-        print(LocalIPAddress());
-        myClient.Connect(LocalIPAddress(), 7777);
+        mLocalClient = new NetworkClient();
+
+        mLocalClient.RegisterHandler(MessageTypes.PuzzleType, ClientSideFunction);
+
+        print(GetLocalIPAddress());
+        mLocalClient.Connect(GetLocalIPAddress(), 7777);
     }
 
-    public string LocalIPAddress()
+    public string GetLocalIPAddress()
     {
         IPHostEntry host;
         string localIP = "";
@@ -66,7 +70,7 @@ public class PlayerServerCommunication : NetworkBehaviour {
 
     public void ClientSideFunction(NetworkMessage netMsg)
     {
-        Puzzle msg = netMsg.ReadMessage<Puzzle>();
+        PuzzleMessage msg = netMsg.ReadMessage<PuzzleMessage>();
         Debug.Log("Puzzle is " + msg.puzzleInt);
     }
 
