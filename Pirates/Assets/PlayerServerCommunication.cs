@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.Net;
+using System.Net.Sockets;
 
 public class PlayerServerCommunication : NetworkBehaviour {
 
@@ -11,6 +13,11 @@ public class PlayerServerCommunication : NetworkBehaviour {
     {
         public static short PuzzleType = 1000;
     };
+    
+    PlayerServerCommunication()
+    {
+        SetupClient();
+    }
 
     void Update()
     {
@@ -37,7 +44,24 @@ public class PlayerServerCommunication : NetworkBehaviour {
     {
         myClient = new NetworkClient();
         myClient.RegisterHandler(MessageTypes.PuzzleType, ClientSideFunction);
-        myClient.Connect("192.168.85.52", 7777);
+        print(LocalIPAddress());
+        myClient.Connect(LocalIPAddress(), 7777);
+    }
+
+    public string LocalIPAddress()
+    {
+        IPHostEntry host;
+        string localIP = "";
+        host = Dns.GetHostEntry(Dns.GetHostName());
+        foreach (IPAddress ip in host.AddressList)
+        {
+            if (ip.AddressFamily == AddressFamily.InterNetwork)
+            {
+                localIP = ip.ToString();
+                break;
+            }
+        }
+        return localIP;
     }
 
     public void ClientSideFunction(NetworkMessage netMsg)
