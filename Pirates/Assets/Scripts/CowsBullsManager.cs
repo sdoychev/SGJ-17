@@ -191,12 +191,15 @@ public class CowsBullsManager : MonoBehaviour {
         GameObject networkManager = GameObject.FindGameObjectWithTag("NetworkManager");
         ConnectedPlayers connectedPlayers = networkManager.GetComponent<ConnectedPlayers>();
         List<GameObject> teamList;
+        List<GameObject> enemyTeamList;
         List<GameObject> filteredTeamList = new List<GameObject>();
 
         if (localPlayer.GetComponent<PlayerServerCommunication>().isTeamA) {
             teamList = connectedPlayers.GetOrderedPlayersFromTeamA();
+            enemyTeamList = connectedPlayers.GetOrderedPlayersFromTeamB();
         } else {
             teamList = connectedPlayers.GetOrderedPlayersFromTeamB();
+            enemyTeamList = connectedPlayers.GetOrderedPlayersFromTeamA();
         }
 
         bool weWon = true;
@@ -208,10 +211,24 @@ public class CowsBullsManager : MonoBehaviour {
                 weWon = false;
             }
         }
-
+        
         if( weWon )
         {
             GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>().GoToState(GameState.State.Win);
+            return;
+        }
+
+        bool weLost = true;
+        foreach( GameObject player in enemyTeamList )
+        {
+            if( player.GetComponent<PlayerServerCommunication>().GetCurrentLevel() < 4 ) {
+                weLost = false;
+            }
+        }
+
+        if( weLost )
+        {
+            GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>().GoToState(GameState.State.Lose);
             return;
         }
 
