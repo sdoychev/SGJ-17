@@ -226,7 +226,7 @@ public class CowsBullsManager : MonoBehaviour {
             }
         }
 
-        if( weLost )
+        if( weLost && enemyTeamList.Count > 0 )
         {
             GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>().GoToState(GameState.State.Lose);
             return;
