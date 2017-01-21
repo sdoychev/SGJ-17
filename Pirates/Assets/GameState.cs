@@ -17,7 +17,8 @@ public class GameState : MonoBehaviour
     private State oldState;
     public State state;
     
-    private GameObject canvas;
+    private GameObject startGameButton;
+    private GameObject gameGui;
     private GameObject networkManager;
     private GameObject cowsBullsManager;
     private GameObject timeManager;
@@ -27,16 +28,29 @@ public class GameState : MonoBehaviour
         oldState = State.NoState;
         state = State.WaitForConnections;
 
-        canvas = GameObject.Find("Canvas");
+        startGameButton = GameObject.Find("StartGame");
+        gameGui = GameObject.Find("GameGUI");
         networkManager = GameObject.FindGameObjectWithTag("NetworkManager");
         cowsBullsManager = GameObject.FindGameObjectWithTag("CowsBullsManager");
         timeManager = GameObject.Find("Timer Manager");
+
+        GoToState(State.WaitForConnections);
 	}
+
+    public GameObject GetCowsBullsManager()
+    {
+        return cowsBullsManager;
+    }
 
     public void GoToState(State _state)
     {
         state = _state;
         CheckStateChange();
+    }
+
+    public void OnStartGame()
+    {
+        GoToState(State.GameRunning);
     }
 	
 	void Update()
@@ -58,7 +72,8 @@ public class GameState : MonoBehaviour
 
             case State.WaitForConnections:
                 {
-                    canvas.SetActive(false);
+                    startGameButton.SetActive(true);
+                    gameGui.SetActive(false);
                     cowsBullsManager.SetActive(false);
                     timeManager.SetActive(false);
                 }
@@ -66,8 +81,9 @@ public class GameState : MonoBehaviour
 
             case State.GameRunning:
                 {
+                    startGameButton.SetActive(false);
                     networkManager.GetComponent<NetworkManagerHUD>().showGUI = false;
-                    canvas.SetActive(true);
+                    gameGui.SetActive(true);
                     cowsBullsManager.SetActive(true);
                     timeManager.SetActive(true);
                 }
@@ -75,7 +91,8 @@ public class GameState : MonoBehaviour
 
             case State.Win:
                 {
-                    canvas.SetActive(false);
+                    startGameButton.SetActive(false);
+                    gameGui.SetActive(false);
                     cowsBullsManager.SetActive(false);
                     timeManager.SetActive(false);
                 }
@@ -83,7 +100,8 @@ public class GameState : MonoBehaviour
 
             case State.Lose:
                 {
-                    canvas.SetActive(false);
+                    startGameButton.SetActive(false);
+                    gameGui.SetActive(false);
                     cowsBullsManager.SetActive(false);
                     timeManager.SetActive(false);
                 }

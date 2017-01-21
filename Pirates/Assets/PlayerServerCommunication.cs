@@ -54,9 +54,9 @@ public class PlayerServerCommunication : NetworkBehaviour
     {
         print("OnStartLocalPlayer");
 
-        GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>().GoToState(GameState.State.GameRunning); // <TEST>
+        var gameState = GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>();
 
-        GameObject.FindGameObjectWithTag("CowsBullsManager").GetComponent<CowsBullsManager>().setLocalPlayer(this.gameObject);
+        gameState.GetCowsBullsManager().GetComponent<CowsBullsManager>().setLocalPlayer(this.gameObject);
     }
 
     public void SetCurrentLevel(int _level)
