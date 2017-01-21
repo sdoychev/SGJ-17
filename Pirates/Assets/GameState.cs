@@ -163,7 +163,7 @@ public class GameState : MonoBehaviour
                     cowsBullsManager.SetActive(false);
                     timeManager.SetActive(false);
                     
-                    backgrounds.SetActive(false);
+                    backgrounds.SetActive(true);
                     backgroundInitial.SetActive(false);
                     backgroundWin.SetActive(true);
                     backgroundLose.SetActive(false);
