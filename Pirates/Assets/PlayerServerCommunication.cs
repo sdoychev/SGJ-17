@@ -7,6 +7,12 @@ using System.Net.Sockets;
 
 public class PlayerServerCommunication : NetworkBehaviour
 {
+    void Start()
+    {
+        GameObject networkManager = GameObject.FindGameObjectWithTag("NetworkManager");
+        networkManager.GetComponent<ConnectedPlayers>().AddPlayer(this.gameObject);
+	}
+
     [SyncVar]
     public int progress = 0;
 
