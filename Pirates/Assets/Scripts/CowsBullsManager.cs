@@ -188,13 +188,55 @@ public class CowsBullsManager : MonoBehaviour {
         {
             NextLevel();
         }
-        //TODO на 2ро и 3то ниво - видимост на врътки	2-3 часа
-        //if OTHER_PLAYER_1 from same team is on same currentLevel as me:
-            //if currentLevel == 2 -> UNLOCK wheelsForNextLevel[0] and wheelsForNextLevel[3]
-            //if currentLevel == 3 -> UNLOCK wheelsForNextLevel[0] and wheelsForNextLevel[2]
-        //if OTHER_PLAYER_2 from same team is on same currentLevel as me:
-            //if currentLevel == 2 -> UNLOCK wheelsForNextLevel[0] and wheelsForNextLevel[2]
-            //if currentLevel == 3 -> UNLOCK wheelsForNextLevel[1] and wheelsForNextLevel[3]
+
+        //Unlock wheels based on teammates' progress
+        GameObject networkManager = GameObject.FindGameObjectWithTag("NetworkManager");
+        ConnectedPlayers connectedPlayers = networkManager.GetComponent<ConnectedPlayers>();
+        List<GameObject> teamList;
+        List<GameObject> filteredTeamList = new List<GameObject>();
+
+        if (localPlayer.GetComponent<PlayerServerCommunication>().isTeamA) {
+            teamList = connectedPlayers.GetOrderedPlayersFromTeamA();
+        } else {
+            teamList = connectedPlayers.GetOrderedPlayersFromTeamB();
+        } foreach (GameObject player in teamList) {
+            if (!player.Equals(localPlayer)) {
+                filteredTeamList.Add(player);
+            }
+        }
+
+        int playersReadyBeforeMe = 0;
+        foreach (GameObject teammate in filteredTeamList) {
+            if (teammate.GetComponent<PlayerServerCommunication>().level == currentLevel) {
+                playersReadyBeforeMe++;
+            }
+        }
+        unlockWheels(currentLevel, playersReadyBeforeMe);
+    }
+
+    private void unlockWheels(int level, int playersCount)
+    {
+        if (level == 2) {
+            if (playersCount == 1) {
+                wheelsForNextLevel[0].SetActive(true);
+                wheelsForNextLevel[3].SetActive(true);
+            } else {
+                wheelsForNextLevel[0].SetActive(true);
+                wheelsForNextLevel[1].SetActive(true);
+                wheelsForNextLevel[2].SetActive(true);
+                wheelsForNextLevel[3].SetActive(true);
+            }
+        } else if (level == 3) {
+            if (playersCount == 1) {
+                wheelsForNextLevel[1].SetActive(true);
+                wheelsForNextLevel[3].SetActive(true);
+            } else {
+                wheelsForNextLevel[0].SetActive(true);
+                wheelsForNextLevel[1].SetActive(true);
+                wheelsForNextLevel[2].SetActive(true);
+                wheelsForNextLevel[3].SetActive(true);
+            }
+        }
     }
 
     public void IncrementWheelValue() {
