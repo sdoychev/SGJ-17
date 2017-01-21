@@ -138,6 +138,7 @@ public class CowsBullsManager : MonoBehaviour {
     private void NextLevel()
     {
         GameObject[] wheelsArray = GameObject.FindGameObjectsWithTag("wheel");
+        wheelsForNextLevel = wheelsArray;
         foreach (GameObject wheel in wheelsArray)
         {
             wheel.transform.GetChild(0).GetComponent<Text>().text = "0";
@@ -146,7 +147,6 @@ public class CowsBullsManager : MonoBehaviour {
 
             //Implementation of interactable wheels depending ot teammates' progress
             wheel.GetComponent<Button>().interactable = false;
-            wheelsForNextLevel = wheelsArray;
         }
         currentLevel++;
         if (currentLevel>= 4)
@@ -243,25 +243,26 @@ public class CowsBullsManager : MonoBehaviour {
 
     private void unlockWheels(int level, int playersCount)
     {
+        print("Unlock wheels");
         if (level == 2) {
-            if (playersCount == 1) {
-                wheelsForNextLevel[0].SetActive(true);
-                wheelsForNextLevel[3].SetActive(true);
+            if (playersCount <= 1) {
+                wheelsForNextLevel[0].GetComponent<Button>().interactable = true;
+                wheelsForNextLevel[3].GetComponent<Button>().interactable = true;
             } else {
-                wheelsForNextLevel[0].SetActive(true);
-                wheelsForNextLevel[1].SetActive(true);
-                wheelsForNextLevel[2].SetActive(true);
-                wheelsForNextLevel[3].SetActive(true);
+                wheelsForNextLevel[0].GetComponent<Button>().interactable = true;
+                wheelsForNextLevel[1].GetComponent<Button>().interactable = true;
+                wheelsForNextLevel[2].GetComponent<Button>().interactable = true;
+                wheelsForNextLevel[3].GetComponent<Button>().interactable = true;
             }
         } else if (level == 3) {
-            if (playersCount == 1) {
-                wheelsForNextLevel[1].SetActive(true);
-                wheelsForNextLevel[3].SetActive(true);
+            if (playersCount <= 1) {
+                wheelsForNextLevel[1].GetComponent<Button>().interactable = true;
+                wheelsForNextLevel[3].GetComponent<Button>().interactable = true;
             } else {
-                wheelsForNextLevel[0].SetActive(true);
-                wheelsForNextLevel[1].SetActive(true);
-                wheelsForNextLevel[2].SetActive(true);
-                wheelsForNextLevel[3].SetActive(true);
+                wheelsForNextLevel[0].GetComponent<Button>().interactable = true;
+                wheelsForNextLevel[1].GetComponent<Button>().interactable = true;
+                wheelsForNextLevel[2].GetComponent<Button>().interactable = true;
+                wheelsForNextLevel[3].GetComponent<Button>().interactable = true;
             }
         }
     }
