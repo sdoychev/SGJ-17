@@ -27,6 +27,9 @@ public class PlayerServerCommunication : NetworkBehaviour
     [SyncVar]
     public int progress = 0;
 
+    [SyncVar]
+    public int level = 1;
+
     void Update()
     {
         if (!isLocalPlayer)
@@ -58,5 +61,15 @@ public class PlayerServerCommunication : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         print("OnStartLocalPlayer");
+    }
+
+    public void SetCurrentLevel(int _level)
+    {
+        level = _level;
+    }
+
+    public int GetCurrentLevel()
+    {
+        return level;
     }
 }
