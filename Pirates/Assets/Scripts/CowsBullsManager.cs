@@ -154,7 +154,7 @@ public class CowsBullsManager : MonoBehaviour {
             //TODO CHECK IF OTHERS ARE ALREADY THERE
             print("GAME WON");
         }
-        //localPlayer.GetComponent<PlayerServerCommunication>().SetCurrentLevel(currentLevel);
+        localPlayer.GetComponent<PlayerServerCommunication>().SetCurrentLevel(currentLevel);
         GenerateNewPuzzle();
         startTime = Time.time;
         swapBackground = true;
