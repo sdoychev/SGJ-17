@@ -27,6 +27,8 @@ public class CowsBullsManager : MonoBehaviour {
     [SerializeField]
     private GameObject TimeManagerObject;
 
+    private GameObject localPlayer;
+
     private float startTime;
     private bool swapBackground = false;
     private Vector3 newBackgroundPosition;
@@ -140,6 +142,7 @@ public class CowsBullsManager : MonoBehaviour {
             submitButton.GetComponent<Button>().interactable = false;
         }
         currentLevel++;
+        localPlayer.GetComponent<PlayerServerCommunication>().SetCurrentLevel(currentLevel);
         GenerateNewPuzzle();
         startTime = Time.time;
         swapBackground = true;
@@ -227,6 +230,11 @@ public class CowsBullsManager : MonoBehaviour {
             }
         }
         return maxOccurencesCount;
+    }
+
+    public void setLocalPlayer(GameObject player)
+    {
+        localPlayer = player;
     }
 
 }
