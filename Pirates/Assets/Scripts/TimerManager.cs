@@ -73,4 +73,9 @@ public class TimerManager : MonoBehaviour {
         timeElapsedPercent = 0;
         waveEffect.transform.position = new Vector3(waveEffect.transform.position.x, initialWaveLevel, waveEffect.transform.position.z);
     }
+
+    public void RemoveWaterFromScene()
+    {
+        waveEffect.SetActive(false);
+    }
 }

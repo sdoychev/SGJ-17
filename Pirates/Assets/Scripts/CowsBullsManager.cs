@@ -150,6 +150,7 @@ public class CowsBullsManager : MonoBehaviour {
         currentLevel++;
         if (currentLevel>= 4)
         {
+            timeManager.RemoveWaterFromScene();
             //TODO win condition
             //TODO CHECK IF OTHERS ARE ALREADY THERE
             print("GAME WON");
