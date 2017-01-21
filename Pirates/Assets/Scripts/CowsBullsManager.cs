@@ -27,6 +27,7 @@ public class CowsBullsManager : MonoBehaviour {
 
     private void Start()
     {
+        submitButton.GetComponent<Button>().interactable = false;
         GenerateNewPuzzle();
     }
 
@@ -60,10 +61,53 @@ public class CowsBullsManager : MonoBehaviour {
 
     public void CheckSolution()
     {
-        if (true)   //TODO
+        GameObject[] wheels = GameObject.FindGameObjectsWithTag("wheel");
+        List<GameObject> wheelsList = wheels.ToList<GameObject>();
+        int bullsCount = CalculateBullsCount(wheelsList);
+        print("BULLS: " + bullsCount);
+        if (bullsCount == 4)
         {
             NextLevel();
+        } else
+        {
+            int cowsCount = CalculateCowsCount(wheelsList, bullsCount);
+            print("COWS: " + cowsCount);
         }
+        UpdateAttemptsBoard();
+    }
+
+    private int CalculateBullsCount(List<GameObject> wheelsList)
+    {
+        int bullsCount = 0;
+        for (int i = 0; i < wheelsList.Count; i++)
+        {
+            GameObject currentWheel = GameObject.Find("Wheel " + i);
+            if (puzzle[i].Equals(int.Parse(currentWheel.transform.GetChild(0).GetComponent<Text>().text)))
+            {
+                bullsCount++;
+            }
+        }
+        return bullsCount;
+    }
+
+    private int CalculateCowsCount(List<GameObject> wheelsList, int bullsCount)
+    {
+        int cowsCount = 0;
+        for (int i = 0; i < wheelsList.Count; i++)
+        {
+            GameObject currentWheel = GameObject.Find("Wheel " + i);
+            print("Check " + puzzle[i] + " and " + currentWheel.transform.GetChild(0).GetComponent<Text>().text);
+            if (puzzle.Contains((int.Parse(currentWheel.transform.GetChild(0).GetComponent<Text>().text))))
+            {
+                cowsCount++;
+            }
+        }
+        return cowsCount - bullsCount;
+    }
+
+    private void UpdateAttemptsBoard()
+    {
+        //TODO
     }
 
     private void NextLevel()
@@ -131,6 +175,36 @@ public class CowsBullsManager : MonoBehaviour {
             currentValue = 0;
         }
         wheel.transform.GetChild(0).GetComponent<Text>().text = currentValue.ToString();
+        int occurencesCount = GetOccurencesCount();
+        if (occurencesCount <= 1)
+        {
+            submitButton.GetComponent<Button>().interactable = true;
+        } else
+        {
+            submitButton.GetComponent<Button>().interactable = false;
+        }
+    }
+
+    private int GetOccurencesCount()
+    {
+        int maxOccurencesCount = 0;
+        int currentOccurences = 0;
+        GameObject[] wheels = GameObject.FindGameObjectsWithTag("wheel");
+        foreach (GameObject currentWheel in wheels)
+        {
+            currentOccurences = 0;
+            int currentWheelValue = int.Parse(currentWheel.transform.GetChild(0).GetComponent<Text>().text);
+            foreach (GameObject wheelInSecondLoop in wheels)
+            {
+                if (currentWheelValue == int.Parse(wheelInSecondLoop.transform.GetChild(0).GetComponent<Text>().text))
+                currentOccurences++;
+            }
+            if (currentOccurences > maxOccurencesCount)
+            {
+                maxOccurencesCount = currentOccurences;
+            }
+        }
+        return maxOccurencesCount;
     }
 
 }
