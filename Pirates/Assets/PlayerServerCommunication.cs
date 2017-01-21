@@ -78,6 +78,9 @@ public class PlayerServerCommunication : NetworkBehaviour
     public override void OnStartLocalPlayer()
     {
         print("OnStartLocalPlayer");
+
+        GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>().GoToState(GameState.State.GameRunning); // <TEST>
+
         GameObject.FindGameObjectWithTag("CowsBullsManager").GetComponent<CowsBullsManager>().setLocalPlayer(this.gameObject);
     }
 
