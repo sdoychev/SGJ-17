@@ -7,11 +7,22 @@ using System.Net.Sockets;
 
 public class PlayerServerCommunication : NetworkBehaviour
 {
+    public string id;
+    public bool isTeamA;
+
     void Start()
     {
         GameObject networkManager = GameObject.FindGameObjectWithTag("NetworkManager");
-        networkManager.GetComponent<ConnectedPlayers>().AddPlayer(this.gameObject);
+        ConnectedPlayers connectedPlayers = networkManager.GetComponent<ConnectedPlayers>();
+        id = connectedPlayers.AddPlayer(this.gameObject);
+        isTeamA = connectedPlayers.PlayerIsInTeamA(id);
 	}
+
+    void OnDestroy()
+    {
+        GameObject networkManager = GameObject.FindGameObjectWithTag("NetworkManager");
+        networkManager.GetComponent<ConnectedPlayers>().RemovePlayer(id);
+    }
 
     [SyncVar]
     public int progress = 0;
