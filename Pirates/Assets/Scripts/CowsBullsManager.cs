@@ -31,6 +31,7 @@ public class CowsBullsManager : MonoBehaviour {
 
     private float startTime;
     private bool swapBackground = false;
+    private bool swapInstantly = false;
     private Vector3 newBackgroundPosition;
     private TimerManager timeManager;
 
@@ -151,9 +152,6 @@ public class CowsBullsManager : MonoBehaviour {
         if (currentLevel>= 4)
         {
             timeManager.RemoveWaterFromScene();
-            //TODO win condition
-            //TODO CHECK IF OTHERS ARE ALREADY THERE
-            print("GAME WON");
         }
         localPlayer.GetComponent<PlayerServerCommunication>().SetCurrentLevel(currentLevel);
         GenerateNewPuzzle();
@@ -188,7 +186,7 @@ public class CowsBullsManager : MonoBehaviour {
         {
             NextLevel();
         }
-
+        
         //Unlock wheels based on teammates' progress
         GameObject networkManager = GameObject.FindGameObjectWithTag("NetworkManager");
         ConnectedPlayers connectedPlayers = networkManager.GetComponent<ConnectedPlayers>();
@@ -199,10 +197,22 @@ public class CowsBullsManager : MonoBehaviour {
             teamList = connectedPlayers.GetOrderedPlayersFromTeamA();
         } else {
             teamList = connectedPlayers.GetOrderedPlayersFromTeamB();
-        } foreach (GameObject player in teamList) {
+        }
+
+        bool weWon = true;
+        foreach (GameObject player in teamList) {
             if (!player.Equals(localPlayer)) {
                 filteredTeamList.Add(player);
             }
+            if( player.GetComponent<PlayerServerCommunication>().GetCurrentLevel() < 4 ) {
+                weWon = false;
+            }
+        }
+
+        if( weWon )
+        {
+            GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>().GoToState(GameState.State.Win);
+            return;
         }
 
         int playersReadyBeforeMe = 0;

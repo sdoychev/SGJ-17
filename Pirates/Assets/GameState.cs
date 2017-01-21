@@ -27,6 +27,11 @@ public class GameState : MonoBehaviour
     private GameObject playerPrefab;
     private GameObject localPlayer;
 
+    private GameObject backgrounds;
+    private GameObject backgroundInitial;
+    private GameObject backgroundWin;
+    private GameObject backgroundLose;
+
 	void Start()
     {
         oldState = State.NoState;
@@ -37,6 +42,11 @@ public class GameState : MonoBehaviour
         networkManager = GameObject.FindGameObjectWithTag("NetworkManager");
         cowsBullsManager = GameObject.FindGameObjectWithTag("CowsBullsManager");
         timeManager = GameObject.Find("Timer Manager");
+
+        backgrounds = GameObject.Find("Backgrounds");
+        backgroundInitial = GameObject.Find("Background_initial");
+        backgroundWin = GameObject.Find("Background_win");
+        backgroundLose = GameObject.Find("Background_lose");
 
         GoToState(State.WaitForConnections);
 	}
@@ -66,7 +76,9 @@ public class GameState : MonoBehaviour
     {
         CheckStateChange();
 
-        if( localPlayer && localPlayer.GetComponent<PlayerServerCommunication>().startGame )
+        if( state <= State.GameRunning && 
+            localPlayer && 
+            localPlayer.GetComponent<PlayerServerCommunication>().startGame )
         {
             GoToState(State.GameRunning);
         }
@@ -121,6 +133,11 @@ public class GameState : MonoBehaviour
                     gameGui.SetActive(false);
                     cowsBullsManager.SetActive(false);
                     timeManager.SetActive(false);
+
+                    backgrounds.SetActive(false);
+                    backgroundInitial.SetActive(true);
+                    backgroundWin.SetActive(false);
+                    backgroundLose.SetActive(false);
                 }
                 break;
 
@@ -131,6 +148,11 @@ public class GameState : MonoBehaviour
                     gameGui.SetActive(true);
                     cowsBullsManager.SetActive(true);
                     timeManager.SetActive(true);
+                    
+                    backgrounds.SetActive(true);
+                    backgroundInitial.SetActive(false);
+                    backgroundWin.SetActive(false);
+                    backgroundLose.SetActive(false);
                 }
                 break;
 
@@ -140,6 +162,11 @@ public class GameState : MonoBehaviour
                     gameGui.SetActive(false);
                     cowsBullsManager.SetActive(false);
                     timeManager.SetActive(false);
+                    
+                    backgrounds.SetActive(false);
+                    backgroundInitial.SetActive(false);
+                    backgroundWin.SetActive(true);
+                    backgroundLose.SetActive(false);
                 }
                 break;
 
@@ -149,6 +176,11 @@ public class GameState : MonoBehaviour
                     gameGui.SetActive(false);
                     cowsBullsManager.SetActive(false);
                     timeManager.SetActive(false);
+                    
+                    backgrounds.SetActive(false);
+                    backgroundInitial.SetActive(false);
+                    backgroundWin.SetActive(false);
+                    backgroundLose.SetActive(true);
                 }
                 break;
             }

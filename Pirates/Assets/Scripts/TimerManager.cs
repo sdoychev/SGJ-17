@@ -46,8 +46,8 @@ public class TimerManager : MonoBehaviour {
             UpdateWaveLevel();
         } else
         {
-            //TODO lose condition
             print("GAME OVER");
+            GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>().GoToState(GameState.State.Lose);
         }
     }
 
