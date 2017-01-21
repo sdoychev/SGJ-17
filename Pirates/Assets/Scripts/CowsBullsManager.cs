@@ -34,6 +34,8 @@ public class CowsBullsManager : MonoBehaviour {
     private Vector3 newBackgroundPosition;
     private TimerManager timeManager;
 
+    private GameObject[] wheelsForNextLevel;
+
     private void Start()
     {
         submitButton.GetComponent<Button>().interactable = false;
@@ -140,6 +142,10 @@ public class CowsBullsManager : MonoBehaviour {
             wheel.transform.GetChild(0).GetComponent<Text>().text = "0";
             CleanAttemptsBoard();
             submitButton.GetComponent<Button>().interactable = false;
+
+            //Implementation of interactable wheels depending ot teammates' progress
+            wheel.GetComponent<Button>().interactable = false;
+            wheelsForNextLevel = wheelsArray;
         }
         currentLevel++;
         if (currentLevel>= 4)
@@ -148,7 +154,7 @@ public class CowsBullsManager : MonoBehaviour {
             //TODO CHECK IF OTHERS ARE ALREADY THERE
             print("GAME WON");
         }
-        localPlayer.GetComponent<PlayerServerCommunication>().SetCurrentLevel(currentLevel);
+        //localPlayer.GetComponent<PlayerServerCommunication>().SetCurrentLevel(currentLevel);
         GenerateNewPuzzle();
         startTime = Time.time;
         swapBackground = true;
@@ -181,6 +187,13 @@ public class CowsBullsManager : MonoBehaviour {
         {
             NextLevel();
         }
+        //TODO на 2ро и 3то ниво - видимост на врътки	2-3 часа
+        //if OTHER_PLAYER_1 from same team is on same currentLevel as me:
+            //if currentLevel == 2 -> UNLOCK wheelsForNextLevel[0] and wheelsForNextLevel[3]
+            //if currentLevel == 3 -> UNLOCK wheelsForNextLevel[0] and wheelsForNextLevel[2]
+        //if OTHER_PLAYER_2 from same team is on same currentLevel as me:
+            //if currentLevel == 2 -> UNLOCK wheelsForNextLevel[0] and wheelsForNextLevel[2]
+            //if currentLevel == 3 -> UNLOCK wheelsForNextLevel[1] and wheelsForNextLevel[3]
     }
 
     public void IncrementWheelValue() {
