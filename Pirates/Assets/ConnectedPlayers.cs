@@ -13,7 +13,7 @@ public class ConnectedPlayers : NetworkBehaviour
 
     public Dictionary<string, GameObject> TeamB;
     public int TeamBConnectedPlayersCount = 0;
-
+    
     void Start()
     {
         Players = new Dictionary<string, GameObject>();
@@ -21,8 +21,29 @@ public class ConnectedPlayers : NetworkBehaviour
         TeamB = new Dictionary<string, GameObject>();
 	}
 	
+    private bool gameStarted;
+
 	void Update()
     {
+        if( !gameStarted ) // if someone starts the game, everyone starts the game
+        {
+            foreach( KeyValuePair<string, GameObject> kvp in Players )
+            {
+                if( kvp.Value.GetComponent<PlayerServerCommunication>().startGame )
+                {
+                    gameStarted = true;
+                    break;
+                }
+            }
+
+            if( gameStarted )
+            {
+                foreach( KeyValuePair<string, GameObject> kvp in Players )
+                {
+                    kvp.Value.GetComponent<PlayerServerCommunication>().startGame = true;
+                }
+            }
+        }
 	}
 
     public string AddPlayer(GameObject player)

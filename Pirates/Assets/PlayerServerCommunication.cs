@@ -28,6 +28,10 @@ public class PlayerServerCommunication : NetworkBehaviour
     [SyncVar]
     public int level = 1;
 
+    public bool oldStartGame = false;
+    [SyncVar]
+    public bool startGame = false;
+
     void Update()
     {
         if( !isLocalPlayer )
@@ -38,6 +42,13 @@ public class PlayerServerCommunication : NetworkBehaviour
             CmdLevel(level);
             print("level " + level);
             oldLevel = level;
+        }
+
+        if( oldStartGame != startGame )
+        {
+            CmdStartGame();
+            print("Start Game");
+            oldStartGame = startGame;
         }
     }
 
@@ -50,12 +61,22 @@ public class PlayerServerCommunication : NetworkBehaviour
         level = l;
     }
 
+    [Command]
+    public void CmdStartGame()
+    {
+        if (!isServer)
+            return;
+
+        startGame = true;
+    }
+
     public override void OnStartLocalPlayer()
     {
         print("OnStartLocalPlayer");
 
         var gameState = GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>();
 
+        gameState.SetLocalPlayer(this.gameObject);
         gameState.GetCowsBullsManager().GetComponent<CowsBullsManager>().setLocalPlayer(this.gameObject);
     }
 

@@ -25,6 +25,7 @@ public class GameState : MonoBehaviour
 
     [SerializeField]
     private GameObject playerPrefab;
+    private GameObject localPlayer;
 
 	void Start()
     {
@@ -45,6 +46,11 @@ public class GameState : MonoBehaviour
         return cowsBullsManager;
     }
 
+    public void SetLocalPlayer(GameObject player)
+    {
+        localPlayer = player;
+    }
+    
     public void GoToState(State _state)
     {
         state = _state;
@@ -53,12 +59,17 @@ public class GameState : MonoBehaviour
 
     public void OnStartGame()
     {
-        GoToState(State.GameRunning);
+        localPlayer.GetComponent<PlayerServerCommunication>().startGame = true;
     }
 	
 	void Update()
     {
         CheckStateChange();
+
+        if( localPlayer && localPlayer.GetComponent<PlayerServerCommunication>().startGame )
+        {
+            GoToState(State.GameRunning);
+        }
 
         // cheats //////////////////////////////////
         if (Input.GetKeyDown(KeyCode.U))
