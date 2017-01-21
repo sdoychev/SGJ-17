@@ -23,6 +23,9 @@ public class GameState : MonoBehaviour
     private GameObject cowsBullsManager;
     private GameObject timeManager;
 
+    [SerializeField]
+    private GameObject playerPrefab;
+
 	void Start()
     {
         oldState = State.NoState;
@@ -56,6 +59,37 @@ public class GameState : MonoBehaviour
 	void Update()
     {
         CheckStateChange();
+
+        // cheats //////////////////////////////////
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            var newObject = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        }
+        
+        if( Input.GetKeyDown(KeyCode.Keypad1) )
+        {
+            CheatAddLevelForPlayer(0);
+        }
+        if( Input.GetKeyDown(KeyCode.Keypad2) )
+        {
+            CheatAddLevelForPlayer(1);
+        }
+        if( Input.GetKeyDown(KeyCode.Keypad3) )
+        {
+            CheatAddLevelForPlayer(2);
+        }
+        if( Input.GetKeyDown(KeyCode.Keypad4) )
+        {
+            CheatAddLevelForPlayer(3);
+        }
+        if( Input.GetKeyDown(KeyCode.Keypad5) )
+        {
+            CheatAddLevelForPlayer(4);
+        }
+        if( Input.GetKeyDown(KeyCode.Keypad6) )
+        {
+            CheatAddLevelForPlayer(5);
+        }
 	}
 
     private void CheckStateChange()
@@ -110,5 +144,14 @@ public class GameState : MonoBehaviour
 
             oldState = state;
         }
+    }
+
+    private void CheatAddLevelForPlayer(int playerIndex)
+    {
+        var allPlayers = networkManager.GetComponent<ConnectedPlayers>().GetOrderedPlayers();
+
+        var psc = allPlayers[playerIndex].GetComponent<PlayerServerCommunication>();
+
+        psc.SetCurrentLevel(psc.GetCurrentLevel() + 1);
     }
 }

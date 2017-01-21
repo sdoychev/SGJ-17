@@ -28,6 +28,12 @@ public class ConnectedPlayers : NetworkBehaviour
     public string AddPlayer(GameObject player)
     {
         string id = player.GetComponent<NetworkIdentity>().netId.ToString();
+
+        if( id == "0" ) // when we use cheats we fake it
+        {
+            id = (ConnectedPlayersCount + 1).ToString();
+        }
+
         Players.Add(id, player);
 
         if( ConnectedPlayersCount % 2 == 0 )
@@ -94,6 +100,18 @@ public class ConnectedPlayers : NetworkBehaviour
     public Dictionary<string, GameObject> GetPlayersFromTeamB()
     {
         return TeamB;
+    }
+
+    public List<GameObject> GetOrderedPlayers()
+    {
+        List<GameObject> someOrder = new List<GameObject>();
+
+        foreach( KeyValuePair<string, GameObject> kvp in Players )
+        {
+            someOrder.Add(kvp.Value);
+        }
+
+        return someOrder;
     }
 
     public List<GameObject> GetOrderedPlayersFromTeamA()
