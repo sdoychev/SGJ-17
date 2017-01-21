@@ -142,6 +142,12 @@ public class CowsBullsManager : MonoBehaviour {
             submitButton.GetComponent<Button>().interactable = false;
         }
         currentLevel++;
+        if (currentLevel>= 4)
+        {
+            //TODO win condition
+            //TODO CHECK IF OTHERS ARE ALREADY THERE
+            print("GAME WON");
+        }
         localPlayer.GetComponent<PlayerServerCommunication>().SetCurrentLevel(currentLevel);
         GenerateNewPuzzle();
         startTime = Time.time;

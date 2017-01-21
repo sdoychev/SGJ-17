@@ -44,6 +44,10 @@ public class TimerManager : MonoBehaviour {
         if (timeLeft > 0)
         {
             UpdateWaveLevel();
+        } else
+        {
+            //TODO lose condition
+            print("GAME OVER");
         }
     }
 
