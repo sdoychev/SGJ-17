@@ -126,6 +126,13 @@ public class CowsBullsManager : MonoBehaviour {
 
     private void NextLevel()
     {
+        GameObject[] wheelsArray = GameObject.FindGameObjectsWithTag("wheel");
+        foreach (GameObject wheel in wheelsArray)
+        {
+            wheel.transform.GetChild(0).GetComponent<Text>().text = "0";
+            CleanAttemptsBoard();
+            submitButton.GetComponent<Button>().interactable = false;
+        }
         currentLevel++;
         GenerateNewPuzzle();
         startTime = Time.time;
@@ -139,6 +146,7 @@ public class CowsBullsManager : MonoBehaviour {
         {
             wheels.SetActive(false);
             submitButton.SetActive(false);
+            attemptsBoard.transform.parent.gameObject.SetActive(false);
             backgrounds.transform.position = Vector3.Lerp(backgrounds.transform.position, newBackgroundPosition, (Time.time - startTime) / 100f);
         }
         if (swapBackground && newBackgroundPosition.y + 0.1f > backgrounds.transform.position.y)
@@ -149,20 +157,12 @@ public class CowsBullsManager : MonoBehaviour {
             {
                 wheels.SetActive(true);
                 submitButton.SetActive(true);
+                attemptsBoard.transform.parent.gameObject.SetActive(true);
             }
         }
-    }
-
-    private void UpdateWheelsUI() {
-        GameObject[] wheels = GameObject.FindGameObjectsWithTag("wheel");
-        List<GameObject> wheelsList = wheels.ToList<GameObject>();
-        if (currentLevel == 1)
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            wheelsList.Reverse();
-        }
-        for (int i = 0; i <= wheelsList.Count - 1; i++)
-        {
-            wheelsList[i].transform.GetChild(0).GetComponent<Text>().text = puzzle[i].ToString();
+            NextLevel();
         }
     }
 
