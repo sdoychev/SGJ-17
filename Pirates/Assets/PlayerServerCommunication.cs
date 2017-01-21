@@ -24,9 +24,6 @@ public class PlayerServerCommunication : NetworkBehaviour
         networkManager.GetComponent<ConnectedPlayers>().RemovePlayer(id);
     }
 
-    [SyncVar]
-    public int progress = 0;
-
     public int oldLevel = 1;
     [SyncVar]
     public int level = 1;
@@ -36,34 +33,12 @@ public class PlayerServerCommunication : NetworkBehaviour
         if( !isLocalPlayer )
             return;
 
-        if( Input.GetKeyDown(KeyCode.O) )
-        {
-            progress -= 1;
-            CmdProgress(progress);
-            print("progress " + progress);
-        }
-        if( Input.GetKeyDown(KeyCode.P) )
-        {
-            progress += 1;
-            CmdProgress(progress);
-            print("progress " + progress);
-        }
-
         if( oldLevel != level )
         {
             CmdLevel(level);
             print("level " + level);
             oldLevel = level;
         }
-    }
-
-    [Command]
-    public void CmdProgress(int p)
-    {
-        if (!isServer)
-            return;
-
-        progress = p;
     }
 
     [Command]
