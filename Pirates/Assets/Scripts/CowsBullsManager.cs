@@ -10,16 +10,19 @@ public class CowsBullsManager : MonoBehaviour {
     private int currentLevel = 1;
 
     [SerializeField]
-    GameObject backgrounds;
+    private GameObject backgrounds;
 
     [SerializeField]
-    GameObject wheels;
+    private GameObject wheels;
 
     [SerializeField]
-    GameObject submitButton;
+    private GameObject submitButton;
 
     [SerializeField]
-    List<int> puzzle;
+    private List<int> puzzle;
+
+    [SerializeField]
+    private Text attemptsBoard;
 
     private float startTime;
     private bool swapBackground = false;
@@ -63,17 +66,17 @@ public class CowsBullsManager : MonoBehaviour {
     {
         GameObject[] wheels = GameObject.FindGameObjectsWithTag("wheel");
         List<GameObject> wheelsList = wheels.ToList<GameObject>();
+        int cowsCount = 0;
         int bullsCount = CalculateBullsCount(wheelsList);
-        print("BULLS: " + bullsCount);
         if (bullsCount == 4)
         {
+            CleanAttemptsBoard();
             NextLevel();
         } else
         {
-            int cowsCount = CalculateCowsCount(wheelsList, bullsCount);
-            print("COWS: " + cowsCount);
+            cowsCount = CalculateCowsCount(wheelsList, bullsCount);
+            UpdateAttemptsBoard(wheelsList, bullsCount, cowsCount);
         }
-        UpdateAttemptsBoard();
     }
 
     private int CalculateBullsCount(List<GameObject> wheelsList)
@@ -96,7 +99,6 @@ public class CowsBullsManager : MonoBehaviour {
         for (int i = 0; i < wheelsList.Count; i++)
         {
             GameObject currentWheel = GameObject.Find("Wheel " + i);
-            print("Check " + puzzle[i] + " and " + currentWheel.transform.GetChild(0).GetComponent<Text>().text);
             if (puzzle.Contains((int.Parse(currentWheel.transform.GetChild(0).GetComponent<Text>().text))))
             {
                 cowsCount++;
@@ -105,9 +107,21 @@ public class CowsBullsManager : MonoBehaviour {
         return cowsCount - bullsCount;
     }
 
-    private void UpdateAttemptsBoard()
+    private void UpdateAttemptsBoard(List<GameObject> wheelsList, int bullsCount, int cowsCount)
     {
-        //TODO
+        string userInput = "";
+        for (int i = 0; i < wheelsList.Count; i++)
+        {
+            GameObject currentWheel = GameObject.Find("Wheel " + i);
+            userInput += currentWheel.transform.GetChild(0).GetComponent<Text>().text;
+        }
+        userInput += " - " + bullsCount + " b. " + cowsCount + " c. \n";
+        attemptsBoard.text += userInput;
+    }
+
+    private void CleanAttemptsBoard()
+    {
+        attemptsBoard.text = "";
     }
 
     private void NextLevel()
