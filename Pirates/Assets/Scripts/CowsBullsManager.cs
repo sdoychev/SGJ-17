@@ -27,7 +27,20 @@ public class CowsBullsManager : MonoBehaviour {
     [SerializeField]
     private GameObject TimeManagerObject;
 
+    [SerializeField]
+    private AudioClip wheelSfx;
+
+    [SerializeField]
+    private AudioClip levelWonSfx;
+
+    [SerializeField]
+    private AudioClip checkWheelsSfx;
+
+    [SerializeField]
+    private AudioClip wrongAnswerSfx;
+
     private GameObject localPlayer;
+    private AudioSource audio;
 
     private float startTime;
     private bool swapBackground = false;
@@ -42,6 +55,7 @@ public class CowsBullsManager : MonoBehaviour {
         submitButton.GetComponent<Button>().interactable = false;
         GenerateNewPuzzle();
         timeManager = TimeManagerObject.GetComponent<TimerManager>();
+        audio = GetComponent<AudioSource>();
     }
 
     private List<int> GenerateNewPuzzle()
@@ -76,16 +90,19 @@ public class CowsBullsManager : MonoBehaviour {
     {
         GameObject[] wheels = GameObject.FindGameObjectsWithTag("wheel");
         List<GameObject> wheelsList = wheels.ToList<GameObject>();
+        audio.PlayOneShot(checkWheelsSfx);
         int cowsCount = 0;
         int bullsCount = CalculateBullsCount(wheelsList);
         if (bullsCount == 4)
         {
             CleanAttemptsBoard();
+            audio.PlayOneShot(levelWonSfx);
             NextLevel();
         } else
         {
             cowsCount = CalculateCowsCount(wheelsList, bullsCount);
             UpdateAttemptsBoard(wheelsList, bullsCount, cowsCount);
+            audio.PlayOneShot(wrongAnswerSfx); 
             timeManager.ReduceTimerTime();
         }
     }
@@ -137,6 +154,7 @@ public class CowsBullsManager : MonoBehaviour {
 
     private void NextLevel()
     {
+        timeManager.ResetWaveLevel();
         GameObject[] wheelsArray = GameObject.FindGameObjectsWithTag("wheel");
         wheelsForNextLevel = wheelsArray;
         foreach (GameObject wheel in wheelsArray)
@@ -158,8 +176,6 @@ public class CowsBullsManager : MonoBehaviour {
         startTime = Time.time;
         swapBackground = true;
         newBackgroundPosition = new Vector3(backgrounds.transform.position.x, backgrounds.transform.position.y - 10f, backgrounds.transform.position.z);
-
-        timeManager.ResetWaveLevel();
     }
 
     void Update()
@@ -243,7 +259,6 @@ public class CowsBullsManager : MonoBehaviour {
 
     private void unlockWheels(int level, int playersCount)
     {
-        print("Unlock wheels");
         if (level == 2) {
             if (playersCount <= 1) {
                 wheelsForNextLevel[0].GetComponent<Button>().interactable = true;
@@ -271,6 +286,8 @@ public class CowsBullsManager : MonoBehaviour {
         GameObject wheel = EventSystem.current.currentSelectedGameObject;
         int currentValue = int.Parse(wheel.transform.GetChild(0).GetComponent<Text>().text);
         currentValue++;
+        audio.PlayOneShot(wheelSfx);
+
         int maxValue;
         switch (currentLevel)
         {

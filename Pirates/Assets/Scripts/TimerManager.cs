@@ -15,12 +15,16 @@ public class TimerManager : MonoBehaviour {
     [SerializeField]
     private GameObject waveEffect;
 
+    [SerializeField]
+    private AudioClip levelFailedSfx;
+
     private CowsBullsManager cowsBullsManager;
     private float initialTimerValue;
     private float timeElapsedPercent;
     private float totalWavePath;
     private float initialWaveLevel;
     private float finalWaveLevel;
+    private AudioSource audio;
 
     void Start()
     {
@@ -29,6 +33,7 @@ public class TimerManager : MonoBehaviour {
         initialWaveLevel = -232f;
         finalWaveLevel = 518f;
         totalWavePath = Mathf.Abs(initialWaveLevel - finalWaveLevel);
+        audio = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -46,7 +51,7 @@ public class TimerManager : MonoBehaviour {
             UpdateWaveLevel();
         } else
         {
-            print("GAME OVER");
+            audio.PlayOneShot(levelFailedSfx);
             GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>().GoToState(GameState.State.Lose);
         }
     }
@@ -64,7 +69,7 @@ public class TimerManager : MonoBehaviour {
 
     public void ResetWaveLevel()
     {
-        Invoke("ResetWater", 3.5f);
+        Invoke("ResetWater", 1.5f);
     }
 
     private void ResetWater()
