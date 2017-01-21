@@ -27,25 +27,33 @@ public class PlayerServerCommunication : NetworkBehaviour
     [SyncVar]
     public int progress = 0;
 
+    public int oldLevel = 1;
     [SyncVar]
     public int level = 1;
 
     void Update()
     {
-        if (!isLocalPlayer)
+        if( !isLocalPlayer )
             return;
-        
-        if (Input.GetKeyDown(KeyCode.O))
+
+        if( Input.GetKeyDown(KeyCode.O) )
         {
             progress -= 1;
             CmdProgress(progress);
             print("progress " + progress);
         }
-        if (Input.GetKeyDown(KeyCode.P))
+        if( Input.GetKeyDown(KeyCode.P) )
         {
             progress += 1;
             CmdProgress(progress);
             print("progress " + progress);
+        }
+
+        if( oldLevel != level )
+        {
+            CmdLevel(level);
+            print("level " + level);
+            oldLevel = level;
         }
     }
 
@@ -58,9 +66,19 @@ public class PlayerServerCommunication : NetworkBehaviour
         progress = p;
     }
 
+    [Command]
+    public void CmdLevel(int l)
+    {
+        if (!isServer)
+            return;
+
+        level = l;
+    }
+
     public override void OnStartLocalPlayer()
     {
         print("OnStartLocalPlayer");
+        GameObject.FindGameObjectWithTag("CowsBullsManager").GetComponent<CowsBullsManager>().setLocalPlayer(this.gameObject);
     }
 
     public void SetCurrentLevel(int _level)
