@@ -7,71 +7,39 @@ using System.Net.Sockets;
 
 public class PlayerServerCommunication : NetworkBehaviour
 {
-    public class MessageTypes
-    {
-        public static short PuzzleType = 1000;
-    };
-
-    public class PuzzleMessage : MessageBase
-    {
-        public int puzzleInt;
-    }
-
-    NetworkClient mLocalClient;
-
-    
-    /*
-    PlayerServerCommunication()
-    {
-        SetupClient();
-    }*/
+    [SyncVar]
+    public int progress = 0;
 
     void Update()
     {
+        if (!isLocalPlayer)
+            return;
+        
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            progress -= 1;
+            CmdProgress(progress);
+            print("progress " + progress);
+        }
         if (Input.GetKeyDown(KeyCode.P))
         {
-            CmdSolvePuzzle();
+            progress += 1;
+            CmdProgress(progress);
+            print("progress " + progress);
         }
     }
 
     [Command]
-    void CmdSolvePuzzle()
+    public void CmdProgress(int p)
     {
-        PuzzleMessage puzzleMessage = new PuzzleMessage();
-        puzzleMessage.puzzleInt = 222;
-        NetworkServer.SendToAll(MessageTypes.PuzzleType, puzzleMessage);
-    }
-    
-    public void SetupClient()
-    {
-        mLocalClient = new NetworkClient();
+        if (!isServer)
+            return;
 
-        mLocalClient.RegisterHandler(MessageTypes.PuzzleType, ClientSideFunction);
-
-        print(GetLocalIPAddress());
-        mLocalClient.Connect(GetLocalIPAddress(), 7777);
+        progress = p;
     }
 
-    public string GetLocalIPAddress()
+    public override void OnStartLocalPlayer()
     {
-        IPHostEntry host;
-        string localIP = "";
-        host = Dns.GetHostEntry(Dns.GetHostName());
-        foreach (IPAddress ip in host.AddressList)
-        {
-            if (ip.AddressFamily == AddressFamily.InterNetwork)
-            {
-                localIP = ip.ToString();
-                break;
-            }
-        }
-        return localIP;
+        print("OnStartLocalPlayer");
     }
-
-    public void ClientSideFunction(NetworkMessage netMsg)
-    {
-        PuzzleMessage msg = netMsg.ReadMessage<PuzzleMessage>();
-        Debug.Log("Puzzle is " + msg.puzzleInt);
-    }
-
 }
