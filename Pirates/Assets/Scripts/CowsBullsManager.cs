@@ -24,14 +24,19 @@ public class CowsBullsManager : MonoBehaviour {
     [SerializeField]
     private Text attemptsBoard;
 
+    [SerializeField]
+    private GameObject TimeManagerObject;
+
     private float startTime;
     private bool swapBackground = false;
     private Vector3 newBackgroundPosition;
+    private TimerManager timeManager;
 
     private void Start()
     {
         submitButton.GetComponent<Button>().interactable = false;
         GenerateNewPuzzle();
+        timeManager = TimeManagerObject.GetComponent<TimerManager>();
     }
 
     private List<int> GenerateNewPuzzle()
@@ -76,6 +81,7 @@ public class CowsBullsManager : MonoBehaviour {
         {
             cowsCount = CalculateCowsCount(wheelsList, bullsCount);
             UpdateAttemptsBoard(wheelsList, bullsCount, cowsCount);
+            timeManager.ReduceTimerTime();
         }
     }
 
@@ -138,6 +144,8 @@ public class CowsBullsManager : MonoBehaviour {
         startTime = Time.time;
         swapBackground = true;
         newBackgroundPosition = new Vector3(backgrounds.transform.position.x, backgrounds.transform.position.y - 10f, backgrounds.transform.position.z);
+
+        timeManager.ResetWaveLevel();
     }
 
     void Update()

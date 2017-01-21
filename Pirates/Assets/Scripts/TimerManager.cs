@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class TimerManager : MonoBehaviour {
@@ -9,36 +7,66 @@ public class TimerManager : MonoBehaviour {
     private float timeLeft;
 
     [SerializeField]
+    private float timePenaltyOnError;
+
+    [SerializeField]
     private GameObject cowsBullsManagerObject;
 
     [SerializeField]
-    private Image waveEffectImage;
+    private GameObject waveEffect;
 
     private CowsBullsManager cowsBullsManager;
+    private float initialTimerValue;
+    private float timeElapsedPercent;
+    private float totalWavePath;
+    private float initialWaveLevel;
+    private float finalWaveLevel;
 
     void Start()
     {
+        initialTimerValue = timeLeft;
         cowsBullsManager = cowsBullsManagerObject.GetComponent<CowsBullsManager>();
+        initialWaveLevel = -232f;
+        finalWaveLevel = 518f;
+        totalWavePath = Mathf.Abs(initialWaveLevel - finalWaveLevel);
     }
 
     void Update()
     {
-        timeLeft -= Time.deltaTime;
-        UpdateWaveLevel();
-        if (timeLeft < 0)
+        if (Input.GetKeyDown(KeyCode.P))
         {
-            print("GAME OVER"); //TODO
+            ReduceTimerTime();
+        }
+
+        timeElapsedPercent = (initialTimerValue - timeLeft) / initialTimerValue * 100;
+        timeLeft -= Time.deltaTime;
+
+        if (timeLeft > 0)
+        {
+            UpdateWaveLevel();
         }
     }
 
     public void ReduceTimerTime()
     {
-        //TODO
-        UpdateWaveLevel();
+        timeLeft -= timePenaltyOnError;
     }
 
     private void UpdateWaveLevel()
     {
-        //TODO
+        waveEffect.transform.position = new Vector3(waveEffect.transform.position.x, 
+            timeElapsedPercent * totalWavePath / 100 + initialWaveLevel, waveEffect.transform.position.z);
+    }
+
+    public void ResetWaveLevel()
+    {
+        Invoke("ResetWater", 3.5f);
+    }
+
+    private void ResetWater()
+    {
+        timeLeft = initialTimerValue;
+        timeElapsedPercent = 0;
+        waveEffect.transform.position = new Vector3(waveEffect.transform.position.x, initialWaveLevel, waveEffect.transform.position.z);
     }
 }
