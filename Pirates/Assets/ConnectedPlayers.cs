@@ -95,4 +95,28 @@ public class ConnectedPlayers : NetworkBehaviour
     {
         return TeamB;
     }
+
+    public List<GameObject> GetOrderedPlayersFromTeamA()
+    {
+        List<GameObject> someOrder = new List<GameObject>();
+
+        foreach( KeyValuePair<string, GameObject> kvp in TeamA )
+        {
+            someOrder.Add(kvp.Value);
+        }
+
+        return someOrder;
+    }
+
+    public List<GameObject> GetOrderedPlayersFromTeamB()
+    {
+        List<GameObject> someOrder = new List<GameObject>();
+
+        foreach( KeyValuePair<string, GameObject> kvp in TeamB )
+        {
+            someOrder.Add(kvp.Value);
+        }
+
+        return someOrder;
+    }
 }
