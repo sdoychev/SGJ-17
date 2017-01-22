@@ -148,74 +148,81 @@ public class GameState : MonoBehaviour
                 break;
 
             case State.WaitForConnections:
-                startGameButton.SetActive(true);
-                gameGui.SetActive(false);
-                cowsBullsManager.SetActive(false);
-                timeManager.SetActive(false);
+                    startGameButton.SetActive(true);
+                    gameGui.SetActive(false);
+                    cowsBullsManager.SetActive(false);
+                    timeManager.SetActive(false);
 
-                backgrounds.SetActive(false);
-                backgroundInitial.SetActive(true);
-                backgroundWin.SetActive(false);
-                backgroundLose.SetActive(false);
-                backgroundDeath.SetActive(false);
-                break;
+                    backgrounds.SetActive(false);
+                    backgroundInitial.SetActive(true);
+                    backgroundWin.SetActive(false);
+                    backgroundLose.SetActive(false);
+                    backgroundDeath.SetActive(false);
+                    break;
 
             case State.GameRunning:
-                startGameButton.SetActive(false);
-                networkManager.GetComponent<NetworkManagerHUD>().showGUI = false;
-                gameGui.SetActive(true);
-                cowsBullsManager.SetActive(true);
-                timeManager.SetActive(true);
+                    startGameButton.SetActive(false);
+                    networkManager.GetComponent<NetworkManagerHUD>().showGUI = false;
+                    gameGui.SetActive(true);
+                    cowsBullsManager.SetActive(true);
+                    timeManager.SetActive(true);
                     
-                backgrounds.SetActive(true);
-                backgroundInitial.SetActive(false);
-                backgroundWin.SetActive(false);
-                backgroundLose.SetActive(false);
-                backgroundDeath.SetActive(false);
-                break;
+                    backgrounds.SetActive(true);
+                    backgroundInitial.SetActive(false);
+                    backgroundWin.SetActive(false);
+                    backgroundLose.SetActive(false);
+                    backgroundDeath.SetActive(false);
+                    break;
 
             case State.Win:
-                startGameButton.SetActive(false);
-                gameGui.SetActive(false);
-                cowsBullsManager.SetActive(false);
-                timeManager.SetActive(false);
+                    startGameButton.SetActive(false);
+                    gameGui.SetActive(false);
+                    cowsBullsManager.SetActive(false);
+                    timeManager.SetActive(false);
                     
-                backgrounds.SetActive(true);
-                backgroundInitial.SetActive(false);
-                backgroundWin.SetActive(true);
-                backgroundLose.SetActive(false);
-                backgroundDeath.SetActive(false);
-                audio.PlayOneShot(gameWon);
-                break;
+                    backgrounds.SetActive(true);
+                    backgroundInitial.SetActive(false);
+                    backgroundWin.SetActive(true);
+                    backgroundLose.SetActive(false);
+                    backgroundDeath.SetActive(false);
+                    audio.PlayOneShot(gameWon);
+                    break;
 
             case State.Lose:
-                startGameButton.SetActive(false);
-                gameGui.SetActive(false);
-                cowsBullsManager.SetActive(false);
-                timeManager.SetActive(false);
+                    startGameButton.SetActive(false);
+                    gameGui.SetActive(false);
+                    cowsBullsManager.SetActive(false);
+                    timeManager.SetActive(false);
                     
-                backgrounds.SetActive(true);
-                //TODO fade to gray backgrounds
-                backgroundInitial.SetActive(false);
-                backgroundWin.SetActive(false);
-                backgroundLose.SetActive(true);
-                backgroundDeath.SetActive(false);
-                audio.PlayOneShot(gameLost);
+                    backgrounds.SetActive(true);
+                    for (int i = 0; i < backgrounds.transform.childCount; i++)
+                    {
+                        backgrounds.transform.GetChild(i).GetComponent<SpriteRenderer>().color = new Color(64, 64, 64);
+                    }
+
+                    backgroundInitial.SetActive(false);
+                    backgroundWin.SetActive(false);
+                    backgroundLose.SetActive(true);
+                    backgroundDeath.SetActive(false);
+                    audio.PlayOneShot(gameLost);
                 break;
             case State.Death:
-                startGameButton.SetActive(false);
-                gameGui.SetActive(false);
-                cowsBullsManager.SetActive(false);
-                timeManager.SetActive(false);
+                    startGameButton.SetActive(false);
+                    gameGui.SetActive(false);
+                    cowsBullsManager.SetActive(false);
+                    timeManager.SetActive(false);
 
-                backgrounds.SetActive(true);
-                //TODO fade to gray backgrounds
+                    backgrounds.SetActive(true);
+                    for (int i = 0; i < backgrounds.transform.childCount; i++)
+                    {
+                        backgrounds.transform.GetChild(i).GetComponent<SpriteRenderer>().color = new Color(64, 64, 64);
+                    }
 
-                backgroundInitial.SetActive(false);
-                backgroundWin.SetActive(false);
-                backgroundLose.SetActive(false);
-                backgroundDeath.SetActive(true);
-                audio.PlayOneShot(death);
+                    backgroundInitial.SetActive(false);
+                    backgroundWin.SetActive(false);
+                    backgroundLose.SetActive(false);
+                    backgroundDeath.SetActive(true);
+                    audio.PlayOneShot(death);
                 break;
             }
 
