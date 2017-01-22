@@ -91,7 +91,7 @@ public class TimerManager : MonoBehaviour {
         } else
         {
             audio.PlayOneShot(levelFailedSfx);
-            GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>().GoToState(GameState.State.Lose);
+            GameObject.FindGameObjectWithTag("GameState").GetComponent<GameState>().GoToState(GameState.State.Death);
         }
     }
 

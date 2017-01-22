@@ -5,13 +5,25 @@ using UnityEngine.Networking;
 
 public class GameState : MonoBehaviour
 {
+    [SerializeField]
+    AudioClip gameLost;
+
+    [SerializeField]
+    AudioClip gameWon;
+
+    [SerializeField]
+    AudioClip death;
+
+    private AudioSource audio;
+
     public enum State
     {
         NoState,
         WaitForConnections,
         GameRunning,
         Win,
-        Lose
+        Lose,
+        Death
     }
 
     private State oldState;
@@ -31,9 +43,12 @@ public class GameState : MonoBehaviour
     private GameObject backgroundInitial;
     private GameObject backgroundWin;
     private GameObject backgroundLose;
+    private GameObject backgroundDeath;
 
-	void Start()
+    void Start()
     {
+        audio = GetComponent<AudioSource>();
+
         oldState = State.NoState;
         state = State.WaitForConnections;
 
@@ -47,6 +62,7 @@ public class GameState : MonoBehaviour
         backgroundInitial = GameObject.Find("Background_initial");
         backgroundWin = GameObject.Find("Background_win");
         backgroundLose = GameObject.Find("Background_lose");
+        backgroundDeath = GameObject.Find("Background_death");
 
         GoToState(State.WaitForConnections);
 	}
@@ -86,7 +102,11 @@ public class GameState : MonoBehaviour
         // cheats //////////////////////////////////
         if (Input.GetKeyDown(KeyCode.U))
         {
-            var newObject = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+            Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+            Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+            Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+            Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+            Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
         }
         
         if( Input.GetKeyDown(KeyCode.Keypad1) )
@@ -128,62 +148,77 @@ public class GameState : MonoBehaviour
                 break;
 
             case State.WaitForConnections:
-                {
-                    startGameButton.SetActive(true);
-                    gameGui.SetActive(false);
-                    cowsBullsManager.SetActive(false);
-                    timeManager.SetActive(false);
+                startGameButton.SetActive(true);
+                gameGui.SetActive(false);
+                cowsBullsManager.SetActive(false);
+                timeManager.SetActive(false);
 
-                    backgrounds.SetActive(false);
-                    backgroundInitial.SetActive(true);
-                    backgroundWin.SetActive(false);
-                    backgroundLose.SetActive(false);
-                }
+                backgrounds.SetActive(false);
+                backgroundInitial.SetActive(true);
+                backgroundWin.SetActive(false);
+                backgroundLose.SetActive(false);
+                backgroundDeath.SetActive(false);
                 break;
 
             case State.GameRunning:
-                {
-                    startGameButton.SetActive(false);
-                    networkManager.GetComponent<NetworkManagerHUD>().showGUI = false;
-                    gameGui.SetActive(true);
-                    cowsBullsManager.SetActive(true);
-                    timeManager.SetActive(true);
+                startGameButton.SetActive(false);
+                networkManager.GetComponent<NetworkManagerHUD>().showGUI = false;
+                gameGui.SetActive(true);
+                cowsBullsManager.SetActive(true);
+                timeManager.SetActive(true);
                     
-                    backgrounds.SetActive(true);
-                    backgroundInitial.SetActive(false);
-                    backgroundWin.SetActive(false);
-                    backgroundLose.SetActive(false);
-                }
+                backgrounds.SetActive(true);
+                backgroundInitial.SetActive(false);
+                backgroundWin.SetActive(false);
+                backgroundLose.SetActive(false);
+                backgroundDeath.SetActive(false);
                 break;
 
             case State.Win:
-                {
-                    startGameButton.SetActive(false);
-                    gameGui.SetActive(false);
-                    cowsBullsManager.SetActive(false);
-                    timeManager.SetActive(false);
+                startGameButton.SetActive(false);
+                gameGui.SetActive(false);
+                cowsBullsManager.SetActive(false);
+                timeManager.SetActive(false);
                     
-                    backgrounds.SetActive(true);
-                    backgroundInitial.SetActive(false);
-                    backgroundWin.SetActive(true);
-                    backgroundLose.SetActive(false);
-                }
+                backgrounds.SetActive(true);
+                backgroundInitial.SetActive(false);
+                backgroundWin.SetActive(true);
+                backgroundLose.SetActive(false);
+                backgroundDeath.SetActive(false);
+                audio.PlayOneShot(gameWon);
                 break;
 
             case State.Lose:
-                {
-                    startGameButton.SetActive(false);
-                    gameGui.SetActive(false);
-                    cowsBullsManager.SetActive(false);
-                    timeManager.SetActive(false);
+                startGameButton.SetActive(false);
+                gameGui.SetActive(false);
+                cowsBullsManager.SetActive(false);
+                timeManager.SetActive(false);
                     
-                    backgrounds.SetActive(false);
-                    backgroundInitial.SetActive(false);
-                    backgroundWin.SetActive(false);
-                    backgroundLose.SetActive(true);
-                }
+                backgrounds.SetActive(true);
+                //TODO fade to gray backgrounds
+                backgroundInitial.SetActive(false);
+                backgroundWin.SetActive(false);
+                backgroundLose.SetActive(true);
+                backgroundDeath.SetActive(false);
+                audio.PlayOneShot(gameLost);
+                break;
+            case State.Death:
+                startGameButton.SetActive(false);
+                gameGui.SetActive(false);
+                cowsBullsManager.SetActive(false);
+                timeManager.SetActive(false);
+
+                backgrounds.SetActive(true);
+                //TODO fade to gray backgrounds
+
+                backgroundInitial.SetActive(false);
+                backgroundWin.SetActive(false);
+                backgroundLose.SetActive(false);
+                backgroundDeath.SetActive(true);
+                audio.PlayOneShot(death);
                 break;
             }
+
 
             oldState = state;
         }

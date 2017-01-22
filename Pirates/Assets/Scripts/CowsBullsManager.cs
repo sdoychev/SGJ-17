@@ -171,7 +171,6 @@ public class CowsBullsManager : MonoBehaviour {
         {
             timeManager.RemoveWaterFromScene();
         }
-        localPlayer.GetComponent<PlayerServerCommunication>().SetCurrentLevel(currentLevel);
         GenerateNewPuzzle();
         startTime = Time.time;
         swapBackground = true;
@@ -197,6 +196,7 @@ public class CowsBullsManager : MonoBehaviour {
                 submitButton.SetActive(true);
                 attemptsBoard.transform.parent.gameObject.SetActive(true);
             }
+            localPlayer.GetComponent<PlayerServerCommunication>().SetCurrentLevel(currentLevel);
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
