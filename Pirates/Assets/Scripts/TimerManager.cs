@@ -54,7 +54,6 @@ public class TimerManager : MonoBehaviour {
         waveEffectRotation = waveEffect.transform.rotation;
         randomPosition = new Vector3(Random.Range(-100f, 1000f), waveEffectPosition.y, waveEffectPosition.z);
         journeyLength = Vector3.Distance(waveEffectPosition, randomPosition);
-        print(waveEffectRotation);
         randomRotation = new Quaternion(waveEffectRotation.x, waveEffectRotation.y, Random.Range(-0.1f, 0.1f), waveEffectRotation.w);
     }
 
@@ -65,7 +64,6 @@ public class TimerManager : MonoBehaviour {
         waveEffectRotation2 = waveEffect.transform.GetChild(0).transform.rotation;
         randomPosition2 = new Vector3(Random.Range(-100f, 1000f), waveEffectPosition2.y, waveEffectPosition2.z);
         journeyLength = Vector3.Distance(waveEffectPosition2, randomPosition2);
-        print(waveEffectRotation2);
         randomRotation2 = new Quaternion(waveEffectRotation2.x, waveEffectRotation2.y, Random.Range(-0.1f, 0.1f), waveEffectRotation2.w);
     }
 
