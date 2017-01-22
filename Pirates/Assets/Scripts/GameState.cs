@@ -47,6 +47,9 @@ public class GameState : MonoBehaviour
     private GameObject backgroundDeath;
     private GameObject tutorialOverlay;
 
+    private List<GameObject> playerMakersA;
+    private List<GameObject> playerMakersB;
+
     void Start()
     {
         audio = GetComponent<AudioSource>();
@@ -66,6 +69,16 @@ public class GameState : MonoBehaviour
         backgroundLose = GameObject.Find("Background_lose");
         backgroundDeath = GameObject.Find("Background_death");
         tutorialOverlay = GameObject.Find("Tutorial_overlay");
+
+        playerMakersA = new List<GameObject>();
+        playerMakersB = new List<GameObject>();
+
+        playerMakersA.Add(GameObject.Find("PlayerMarker_A1"));
+        playerMakersA.Add(GameObject.Find("PlayerMarker_A2"));
+        playerMakersA.Add(GameObject.Find("PlayerMarker_A3"));
+        playerMakersB.Add(GameObject.Find("PlayerMarker_B1"));
+        playerMakersB.Add(GameObject.Find("PlayerMarker_B2"));
+        playerMakersB.Add(GameObject.Find("PlayerMarker_B3"));
 
         GoToState(State.WaitForConnections);
 	}
@@ -107,6 +120,7 @@ public class GameState : MonoBehaviour
             localPlayer.GetComponent<PlayerServerCommunication>().startGame )
         {
             GoToState(State.GameRunning);
+            ShowPlayerMarker();
         }
 
         // cheats //////////////////////////////////
@@ -169,6 +183,9 @@ public class GameState : MonoBehaviour
                     backgroundLose.SetActive(false);
                     backgroundDeath.SetActive(false);
                     tutorialOverlay.SetActive(false);
+
+                    foreach( GameObject p in playerMakersA ) p.SetActive(false);
+                    foreach( GameObject p in playerMakersB ) p.SetActive(false);
                     break;
 
             case State.Tutorial:
@@ -269,5 +286,31 @@ public class GameState : MonoBehaviour
         var psc = allPlayers[playerIndex].GetComponent<PlayerServerCommunication>();
 
         psc.SetCurrentLevel(psc.GetCurrentLevel() + 1);
+    }
+
+    private void ShowPlayerMarker()
+    {
+        ConnectedPlayers connectedPlayers = networkManager.GetComponent<ConnectedPlayers>();
+
+        bool isTeamA = localPlayer.GetComponent<PlayerServerCommunication>().isTeamA;
+        List<GameObject> team = isTeamA ? connectedPlayers.GetOrderedPlayersFromTeamA() : connectedPlayers.GetOrderedPlayersFromTeamB();
+        int playerIndex = 1;
+        for( ; playerIndex < 4; ++playerIndex )
+        {
+            if(team[playerIndex-1] == localPlayer)
+            {
+                break;
+            }
+        }
+        //string markerId = "PlayerMarker_" + (isTeamA ? "A" : "B") + playerIndex.ToString();
+
+        if( isTeamA )
+        {
+            playerMakersA[playerIndex - 1].SetActive(true);
+        }
+        else
+        {
+            playerMakersB[playerIndex - 1].SetActive(true);
+        }
     }
 }

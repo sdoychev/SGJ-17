@@ -7,6 +7,8 @@ public class ProgressBoard : MonoBehaviour
     private List<List<GameObject>> MarkersTeamA;
     private List<List<GameObject>> MarkersTeamB;
 
+    public GameObject localPlayer;
+
 	void Start()
     {
         MarkersTeamA = new List<List<GameObject>>();
@@ -57,7 +59,7 @@ public class ProgressBoard : MonoBehaviour
 
         List<GameObject> teamA = connectedPlayers.GetOrderedPlayersFromTeamA();
         List<GameObject> teamB = connectedPlayers.GetOrderedPlayersFromTeamB();
-
+        
         for( int i = 0; i < teamA.Count; ++i ) // players
         {
             int currentLevel = teamA[i].GetComponent<PlayerServerCommunication>().GetCurrentLevel();
