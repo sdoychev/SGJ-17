@@ -20,6 +20,7 @@ public class GameState : MonoBehaviour
     {
         NoState,
         WaitForConnections,
+        Tutorial,
         GameRunning,
         Win,
         Lose,
@@ -44,6 +45,7 @@ public class GameState : MonoBehaviour
     private GameObject backgroundWin;
     private GameObject backgroundLose;
     private GameObject backgroundDeath;
+    private GameObject tutorialOverlay;
 
     void Start()
     {
@@ -63,6 +65,7 @@ public class GameState : MonoBehaviour
         backgroundWin = GameObject.Find("Background_win");
         backgroundLose = GameObject.Find("Background_lose");
         backgroundDeath = GameObject.Find("Background_death");
+        tutorialOverlay = GameObject.Find("Tutorial_overlay");
 
         GoToState(State.WaitForConnections);
 	}
@@ -85,7 +88,14 @@ public class GameState : MonoBehaviour
 
     public void OnStartGame()
     {
-        localPlayer.GetComponent<PlayerServerCommunication>().startGame = true;
+        if( state < State.Tutorial )
+        {
+            GoToState(State.Tutorial);
+        }
+        else if( state < State.GameRunning )
+        {
+            localPlayer.GetComponent<PlayerServerCommunication>().startGame = true;
+        }
     }
 	
 	void Update()
@@ -158,6 +168,22 @@ public class GameState : MonoBehaviour
                     backgroundWin.SetActive(false);
                     backgroundLose.SetActive(false);
                     backgroundDeath.SetActive(false);
+                    tutorialOverlay.SetActive(false);
+                    break;
+
+            case State.Tutorial:
+                    startGameButton.SetActive(true);
+                    networkManager.GetComponent<NetworkManagerHUD>().showGUI = false;
+                    gameGui.SetActive(true);
+                    cowsBullsManager.SetActive(false);
+                    timeManager.SetActive(false);
+                    
+                    backgrounds.SetActive(true);
+                    backgroundInitial.SetActive(false);
+                    backgroundWin.SetActive(false);
+                    backgroundLose.SetActive(false);
+                    backgroundDeath.SetActive(false);
+                    tutorialOverlay.SetActive(true);
                     break;
 
             case State.GameRunning:
@@ -172,6 +198,7 @@ public class GameState : MonoBehaviour
                     backgroundWin.SetActive(false);
                     backgroundLose.SetActive(false);
                     backgroundDeath.SetActive(false);
+                    tutorialOverlay.SetActive(false);
                     break;
 
             case State.Win:
@@ -185,6 +212,7 @@ public class GameState : MonoBehaviour
                     backgroundWin.SetActive(true);
                     backgroundLose.SetActive(false);
                     backgroundDeath.SetActive(false);
+                    tutorialOverlay.SetActive(false);
                     audio.PlayOneShot(gameWon);
                     break;
 
@@ -197,16 +225,18 @@ public class GameState : MonoBehaviour
                     backgrounds.SetActive(true);
                     for (int i = 0; i < backgrounds.transform.childCount; i++)
                     {
-                        backgrounds.transform.GetChild(i).GetComponent<SpriteRenderer>().color = new Color(64, 64, 64);
+                        backgrounds.transform.GetChild(i).gameObject.GetComponent<SpriteRenderer>().color = new Color32(64, 64, 64, 255);
                     }
 
                     backgroundInitial.SetActive(false);
                     backgroundWin.SetActive(false);
                     backgroundLose.SetActive(true);
                     backgroundDeath.SetActive(false);
+                    tutorialOverlay.SetActive(false);
                     audio.PlayOneShot(gameLost);
                 break;
-            case State.Death:
+
+             case State.Death:
                     startGameButton.SetActive(false);
                     gameGui.SetActive(false);
                     cowsBullsManager.SetActive(false);
@@ -215,15 +245,16 @@ public class GameState : MonoBehaviour
                     backgrounds.SetActive(true);
                     for (int i = 0; i < backgrounds.transform.childCount; i++)
                     {
-                        backgrounds.transform.GetChild(i).GetComponent<SpriteRenderer>().color = new Color(64, 64, 64);
+                        backgrounds.transform.GetChild(i).gameObject.GetComponent<SpriteRenderer>().color = new Color32(64, 64, 64, 255);
                     }
 
                     backgroundInitial.SetActive(false);
                     backgroundWin.SetActive(false);
                     backgroundLose.SetActive(false);
                     backgroundDeath.SetActive(true);
+                    tutorialOverlay.SetActive(false);
                     audio.PlayOneShot(death);
-                break;
+                    break;
             }
 
 
