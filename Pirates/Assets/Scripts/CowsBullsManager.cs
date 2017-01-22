@@ -143,7 +143,7 @@ public class CowsBullsManager : MonoBehaviour {
             GameObject currentWheel = GameObject.Find("Wheel " + i);
             userInput += currentWheel.transform.GetChild(0).GetComponent<Text>().text;
         }
-        userInput += " - " + bullsCount + " b. " + cowsCount + " c. \n";
+        userInput += " - " + bullsCount + " b " + cowsCount + " c\n";
         attemptsBoard.text += userInput;
     }
 
